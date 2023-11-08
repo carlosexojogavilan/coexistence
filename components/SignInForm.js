@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Text,
   TextInput,
@@ -9,19 +8,19 @@ import {
 } from "react-native";
 import { Formik } from "formik";
 import { FIREBASE_AUTH } from "../firebaseConfig";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
-export const RegisterForm = () => {
-  const handleRegister = async (values, { setSubmitting }) => {
+export const SignInForm = () => {
+  const handleSignIn = async (values, { setSubmitting }) => {
     try {
-      await createUserWithEmailAndPassword(
+      await signInWithEmailAndPassword(
         FIREBASE_AUTH,
         values.email,
         values.password
       );
-      alert("User signed up succesfully");
+      alert("User signed in succesfully");
     } catch (error) {
-      alert(`There was an error signing up the new user:  ${error}`);
+      alert(`There was an error signing in the new user:  ${error}`);
     } finally {
       setSubmitting(false);
     }
@@ -49,7 +48,7 @@ export const RegisterForm = () => {
     <Formik
       initialValues={{ email: "", password: "" }}
       validate={handleValidation}
-      onSubmit={handleRegister}
+      onSubmit={handleSignIn}
     >
       {({
         values,
@@ -93,7 +92,7 @@ export const RegisterForm = () => {
             style={styles.submitBtn}
             disabled={isSubmitting}
           >
-            <Text style={styles.submitBtnText}>Register</Text>
+            <Text style={styles.submitBtnText}>Log In</Text>
           </Pressable>
         </KeyboardAvoidingView>
       )}
@@ -129,4 +128,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegisterForm;
+export default SignInForm;

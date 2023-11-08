@@ -4,6 +4,7 @@ import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
+import HomeStackScreen from "./HomeStackScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -28,7 +29,7 @@ const Tabs = () => {
         tabBarInactiveTintColor: "gray",
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Home" component={HomeStackScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );

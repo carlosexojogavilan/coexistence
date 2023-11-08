@@ -1,12 +1,14 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 import RegisterForm from "../components/RegisterForm";
 
-const RegisterScreen = () => {
+const RegisterScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Register Page</Text>
       <RegisterForm />
+      <Pressable onPress={() => navigation.navigate("Login")}>
+        <Text style={styles.link}>Do you already have an account? Log in</Text>
+      </Pressable>
     </View>
   );
 };
@@ -21,6 +23,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     marginVertical: 20,
+  },
+  link: {
+    fontSize: 16,
+    color: "blue",
   },
 });
 
