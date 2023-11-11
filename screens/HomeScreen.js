@@ -7,12 +7,40 @@ import { Pressable, StyleSheet, Text, View, FlatList } from "react-native";
 import Task from "../components/Task";
 
 import { db } from "../firebaseConfig";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  addDoc,
+  setDoc,
+  deleteDoc,
+} from "firebase/firestore";
 
 SplashScreen.preventAutoHideAsync();
 
 const HomeScreen = ({ navigation, route }) => {
   const [tasks, setTasks] = useState([]);
+
+  //Get the tasks
+
+  const getTasks = async () => {
+    try {
+      const gettedTasks = [];
+      const querySnapshot = await getDocs(collection(db, "Tasks"));
+      querySnapshot.forEach((doc) => {
+        gettedTasks.push({ id: doc.id, ...doc.data() });
+      });
+      setTasks(gettedTasks);
+    } catch (e) {
+      console.log("Error: ", e);
+    }
+  };
+
+  useEffect(() => {
+    getTasks();
+  }, []);
+
+  //Add the tasks
 
   const addNewTask = async (newTask) => {
     try {
@@ -20,7 +48,6 @@ const HomeScreen = ({ navigation, route }) => {
         name: newTask.name,
         description: newTask.description,
       });
-      console.log("Document written with ID: ", docRef.id);
     } catch (e) {
       console.log("Error: ", e);
     }
@@ -33,21 +60,43 @@ const HomeScreen = ({ navigation, route }) => {
     }
   }, [route.params?.task]);
 
+  //Delete the tasks
+
+  const deleteTask = async (deletedTaskID) => {
+    try {
+      await deleteDoc(doc(db, "Tasks", deletedTaskID));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     if (route.params?.deletedTask) {
       const newTasks = tasks.filter(
-        (task) => task.name !== route.params.deletedTask.name
+        (task) => task.id !== route.params.deletedTask.id
       );
       setTasks(newTasks);
+      deleteTask(route.params.deletedTask.id);
     }
   }, [route.params?.deletedTask]);
+
+  //Edit the tasks
+
+  const editTask = async (editedTask) => {
+    try {
+      await setDoc(doc(db, "Tasks", editedTask.id), editedTask);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     if (route.params?.editedTask) {
       console.log(route.params.editedTask);
       const newTasks = tasks.map((task) => {
-        if (task.name === route.params.editedTask.name) {
-          task.description = route.params.editedTask.description;
+        if (task.id === route.params.editedTask.id) {
+          task = route.params.editedTask;
+          editTask(task);
         }
         return task;
       });

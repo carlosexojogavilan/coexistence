@@ -7,7 +7,7 @@ const TaskDetailsScreen = ({ route, navigation }) => {
   const handleEditedTask = (editedTask) => {
     navigation.navigate({
       name: "HomeScreen",
-      params: { editedTask: editedTask },
+      params: { editedTask: { id: task.id, ...editedTask } },
       merge: true,
     });
   };
